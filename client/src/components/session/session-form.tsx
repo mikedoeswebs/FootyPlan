@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { LoadingOverlay } from "@/components/ui/loading-overlay";
 import { Loader2, Wand2, Users, HandMetal } from "lucide-react";
 import type { SessionGeneration } from "@shared/schema";
 
@@ -19,6 +20,18 @@ export function SessionForm({ onGenerate, isGenerating }: SessionFormProps) {
   const [durationMinutes, setDurationMinutes] = useState(60);
   const [participants, setParticipants] = useState(14);
   const [level, setLevel] = useState("");
+  const [loadingPhrases] = useState([
+    "Analyzing tactics from legendary coaches...",
+    "Getting my coaching hat on...",
+    "Studying professional training methods...",
+    "Ingesting real-life sessions...",
+    "Consulting with football experts...",
+    "Reviewing championship-winning drills...",
+    "Crafting the perfect session...",
+    "Drawing inspiration from the pitch...",
+    "Tailoring drills to your players...",
+    "Building your training masterpiece..."
+  ]);
 
   const outfieldOptions = [
     { value: "passing", label: "Passing" },
@@ -64,9 +77,11 @@ export function SessionForm({ onGenerate, isGenerating }: SessionFormProps) {
   };
 
   return (
-    <Card data-testid="session-form">
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <LoadingOverlay isVisible={isGenerating} phrases={loadingPhrases} />
+      <Card data-testid="session-form">
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
           {/* Session Type */}
           <div>
             <Label className="text-sm font-medium text-slate-700 mb-3 block">Session Type</Label>
@@ -215,5 +230,6 @@ export function SessionForm({ onGenerate, isGenerating }: SessionFormProps) {
         </form>
       </CardContent>
     </Card>
+    </>
   );
 }

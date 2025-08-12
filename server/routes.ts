@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { generateTrainingSession } from "./openai";
+import { getMockSession, getRandomLoadingPhrase } from "./mock-data";
 import { sessionGenerationSchema } from "@shared/schema";
 import Stripe from "stripe";
 
@@ -56,7 +57,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const params = validationResult.data;
-      const generatedSession = await generateTrainingSession(params);
+      
+      // Use mock data if in development mode to save API costs
+      const useMockData = process.env.NODE_ENV === "development" && 
+                         req.query.mock !== "false";
+      
+      let generatedSession;
+      if (useMockData) {
+        // Simulate processing time
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        generatedSession = getMockSession(params);
+      } else {
+        generatedSession = await generateTrainingSession(params);
+      }
       
       // Increment user's generation count (only for free users)
       if (req.user!.planType === "free") {
@@ -68,6 +81,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Session generation error:", error);
       res.status(500).json({ message: "Failed to generate session" });
     }
+  });
+
+  // Get loading phrases for UI
+  app.get("/api/loading-phrases", (req, res) => {
+    res.json({ phrase: getRandomLoadingPhrase() });
   });
 
   // Save session endpoint

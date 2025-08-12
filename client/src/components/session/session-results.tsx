@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { EquipmentIcons, PracticeEquipmentSummary } from "@/components/ui/equipment-icons";
 import { Download, Save, X, Clock, Users, Target } from "lucide-react";
 
 interface SessionResultsProps {
@@ -147,11 +148,7 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
             
             <div className="bg-slate-50 p-4 rounded-lg">
               <h4 className="font-semibold text-slate-900 mb-2">Equipment</h4>
-              <ul className="text-sm space-y-1 text-slate-600">
-                {session.equipment?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
+              <EquipmentIcons equipment={session.equipment || []} />
             </div>
             
             <div className="bg-slate-50 p-4 rounded-lg">
@@ -201,6 +198,8 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
                   </div>
                 </div>
 
+                <PracticeEquipmentSummary practice={practice} />
+
                 {practice.steps && (
                   <div className="mb-4">
                     <p className="text-sm font-medium text-slate-600 mb-2">Steps:</p>
@@ -226,8 +225,11 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
                 {practice.diagram_svg && (
                   <div className="mb-4">
                     <p className="text-sm font-medium text-slate-600 mb-2">Diagram:</p>
-                    <div className="bg-white border rounded p-4">
-                      <div dangerouslySetInnerHTML={{ __html: practice.diagram_svg }} />
+                    <div className="bg-white border rounded p-4 max-w-md">
+                      <div 
+                        dangerouslySetInnerHTML={{ __html: practice.diagram_svg }} 
+                        className="[&_svg]:w-full [&_svg]:h-auto"
+                      />
                     </div>
                   </div>
                 )}
