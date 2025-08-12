@@ -1,0 +1,91 @@
+You are to build a full-stack web application called "FootyPlan" that generates dynamic football (soccer) training session plans using the OpenAI ChatGPT API.
+
+## PURPOSE
+Allow coaches/players to generate structured, unique training plans based on a few key inputs:
+1. Session type: Goalkeeping OR Outfield
+2. Session focus: (Dynamic list depending on type)
+   - If Goalkeeping: Handling, Distribution, Diving, Footwork, Crosses, High Balls, Shot-stopping, 1v1, Positioning, Reaction/Reflex.
+   - If Outfield: Passing, Receiving, Dribbling, Crossing, Shooting/Finishing, Defending, Pressing, Possession/Rondos, Transition, Set Pieces.
+3. Session length: 15, 30, 45, 60, 75, 90 minutes
+4. Number of participants: 1–30
+(Optional: Age group/level — youth, academy, adult, professional)
+
+## REQUIREMENTS
+- **Frontend**: React + TailwindCSS. Pages: SignUp/Login, Dashboard, Generator Form, Session View, My Sessions, Billing, Admin.
+- **Backend**: Node.js + Express + PostgreSQL (or Supabase). Endpoints:
+  - Auth: sign-up, login, me
+  - Session generation: POST /api/sessions/generate (calls OpenAI)
+  - Session retrieval, save, list, delete
+  - PDF/JSON download
+  - Billing (Stripe integration), usage quotas
+- **Auth & Quotas**:
+  - Free tier: 5 generations per month
+  - Paid tier (via Stripe): unlimited
+  - Track usage in DB, enforce limits before generation
+- **OpenAI integration**:
+  - No hardcoded sessions. Use ChatGPT for every request.
+  - Prompt engineering: supply a system prompt that enforces structure and a user prompt that contains form inputs and a random seed for variety.
+- **Session Structure** (enforced in system prompt):
+  - Title, Level/Age, Duration, Participants, Objectives (3 bullet points), Equipment, Safety Notes
+  - Warm-up (10–20% total time)
+  - 2–4 Main Practices (each with: name, duration, players, pitch size, setup, steps, coaching points, aims, difficulty 1–5, SVG diagram)
+  - Small-sided game (10–25%)
+  - Cool down (5–10%)
+- **Diagram output**:
+  - Simple SVG (rectangles for field, circles for cones/players, arrows for movement) or ASCII if SVG not possible.
+- **Exports**:
+  - PDF: clean coach-friendly layout, diagrams included
+  - JSON: canonical session schema (see below)
+
+## JSON SCHEMA
+{
+  "title": "string",
+  "level": "string",
+  "session_type": "goalkeeping|outfield",
+  "session_focus": "string",
+  "duration_minutes": number,
+  "participants": number,
+  "objectives": ["string","string","string"],
+  "equipment": ["string", "..."],
+  "warmup": { "name": "string", "duration_minutes": number, "description": "string" },
+  "practices": [
+    {
+      "name": "string",
+      "duration_minutes": number,
+      "players_required": number,
+      "area_meters": [length, width],
+      "setup_description": "string",
+      "steps": ["string", "..."],
+      "coaching_points": ["string", "..."],
+      "aims": ["string", "..."],
+      "difficulty_level": number,
+      "diagram_svg": "string"
+    }
+  ],
+  "small_sided_game": { "duration_minutes": number, "description": "string" },
+  "cooldown": { "duration_minutes": number, "description": "string" },
+  "safety_notes": ["string", "..."],
+  "diagrams": [{"practice_name": "string", "svg": "string"}]
+}
+
+## SYSTEM PROMPT for ChatGPT (to implement in backend)
+"You are an expert football coach. Produce a single-session training plan following the JSON schema above, plus a human-readable Markdown version. Use the given inputs (session_type, session_focus, total_minutes, participants, level, random_seed). Follow session structure rules: warm-up 10–20%, main practices 2–4, small-sided game 10–25%, cool down 5–10%. Each practice must have setup, steps, coaching points, aims, difficulty, and an SVG diagram. Use the random_seed to vary drills. Keep language concise, coach-friendly, and progression logical."
+
+## USER PROMPT example (backend fills dynamically)
+"Generate a football training session.
+session_type: Outfield
+session_focus: Passing
+total_minutes: 60
+participants: 14
+level: Youth U14
+random_seed: 20250812-abc123
+Include measurable aims, pitch area in meters, required equipment, and SVG diagrams."
+
+## ACCEPTANCE CRITERIA
+- Free users blocked after 5 monthly generations with upgrade prompt
+- Sessions always return valid JSON and Markdown
+- Regenerating with same inputs but different seed yields different practices
+- PDFs render diagrams and structured plan
+- Streaming output for Markdown in UI
+
+Now, build the complete app in Replit with frontend, backend, auth, billing, OpenAI integration, quota tracking, PDF/JSON export, and session rendering according to this brief.
