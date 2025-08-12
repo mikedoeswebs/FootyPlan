@@ -172,11 +172,12 @@ export function SessionForm({ onGenerate, isGenerating }: SessionFormProps) {
             <Label htmlFor="ageGroup" className="block text-sm font-medium text-slate-700 mb-2">
               Age Group / Level (Optional)
             </Label>
-            <Select value={level} onValueChange={setLevel}>
+            <Select value={level || "none"} onValueChange={(value) => setLevel(value === "none" ? "" : value)}>
               <SelectTrigger data-testid="select-age-group">
                 <SelectValue placeholder="Select age group..." />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none">No specific level</SelectItem>
                 <SelectItem value="youth-u10">Youth U10</SelectItem>
                 <SelectItem value="youth-u12">Youth U12</SelectItem>
                 <SelectItem value="youth-u14">Youth U14</SelectItem>
