@@ -237,7 +237,7 @@ export default function Billing() {
         </div>
 
         {/* Stripe Integration Notice */}
-        {!process.env.VITE_STRIPE_PUBLIC_KEY && (
+        {!import.meta.env.VITE_STRIPE_PUBLIC_KEY && (
           <Card className="mb-8">
             <CardContent className="p-6">
               <div className="flex items-start space-x-3">

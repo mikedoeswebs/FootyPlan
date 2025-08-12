@@ -26,9 +26,9 @@ export default function Sessions() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [focusFilter, setFocusFilter] = useState("");
-  const [durationFilter, setDurationFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [focusFilter, setFocusFilter] = useState("all");
+  const [durationFilter, setDurationFilter] = useState("all");
 
   const { data: sessions = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/sessions"],
@@ -57,9 +57,9 @@ export default function Sessions() {
   // Filter sessions
   const filteredSessions = sessions.filter((session: any) => {
     const matchesSearch = session.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = !typeFilter || session.sessionType === typeFilter;
-    const matchesFocus = !focusFilter || session.sessionFocus === focusFilter;
-    const matchesDuration = !durationFilter || session.durationMinutes.toString() === durationFilter;
+    const matchesType = typeFilter === "all" || session.sessionType === typeFilter;
+    const matchesFocus = focusFilter === "all" || session.sessionFocus === focusFilter;
+    const matchesDuration = durationFilter === "all" || session.durationMinutes.toString() === durationFilter;
     
     return matchesSearch && matchesType && matchesFocus && matchesDuration;
   });
@@ -127,7 +127,7 @@ export default function Sessions() {
                     <SelectValue placeholder="All Types" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
+                    <SelectItem value="all">All Types</SelectItem>
                     <SelectItem value="outfield">Outfield</SelectItem>
                     <SelectItem value="goalkeeping">Goalkeeping</SelectItem>
                   </SelectContent>
@@ -141,7 +141,7 @@ export default function Sessions() {
                     <SelectValue placeholder="All Focus Areas" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Focus Areas</SelectItem>
+                    <SelectItem value="all">All Focus Areas</SelectItem>
                     <SelectItem value="passing">Passing</SelectItem>
                     <SelectItem value="defending">Defending</SelectItem>
                     <SelectItem value="shooting">Shooting</SelectItem>
@@ -158,7 +158,7 @@ export default function Sessions() {
                     <SelectValue placeholder="All Durations" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Durations</SelectItem>
+                    <SelectItem value="all">All Durations</SelectItem>
                     <SelectItem value="30">30 minutes</SelectItem>
                     <SelectItem value="60">60 minutes</SelectItem>
                     <SelectItem value="90">90 minutes</SelectItem>
