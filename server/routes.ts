@@ -95,10 +95,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
+      console.log("Saving session data:", JSON.stringify(req.body, null, 2));
       const session = await storage.createSession({
         ...req.body,
         userId: req.user.id
       });
+      console.log("Session saved successfully:", session.id);
       res.status(201).json(session);
     } catch (error) {
       console.error("Save session error:", error);

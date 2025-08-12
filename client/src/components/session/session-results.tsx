@@ -17,6 +17,7 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
 
   const saveMutation = useMutation({
     mutationFn: async (sessionData: any) => {
+      console.log("Saving session data:", sessionData);
       const res = await apiRequest("POST", "/api/sessions", sessionData);
       return await res.json();
     },
@@ -28,7 +29,8 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
         description: "Your training session has been saved successfully.",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Save session error:", error);
       toast({
         title: "Save Failed",
         description: "Failed to save session. Please try again.",
@@ -38,6 +40,8 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
   });
 
   const handleSave = () => {
+    console.log("Save button clicked, session data:", session);
+    
     // Transform the session data to match the database schema
     const sessionToSave = {
       title: session.title,
@@ -56,6 +60,7 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
       diagrams: session.diagrams || {}
     };
     
+    console.log("Transformed session to save:", sessionToSave);
     saveMutation.mutate(sessionToSave);
   };
 
