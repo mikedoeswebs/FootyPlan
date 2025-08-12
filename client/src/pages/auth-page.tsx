@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,11 +20,12 @@ export default function AuthPage() {
     confirmPassword: "" 
   });
 
-  // Redirect if already logged in (after hooks)
-  if (user) {
-    setLocation("/");
-    return null;
-  }
+  // Redirect if already logged in (using useEffect to avoid render issues)
+  React.useEffect(() => {
+    if (user) {
+      setLocation("/");
+    }
+  }, [user, setLocation]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();

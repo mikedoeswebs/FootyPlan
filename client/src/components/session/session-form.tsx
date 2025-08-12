@@ -177,7 +177,6 @@ export function SessionForm({ onGenerate, isGenerating }: SessionFormProps) {
                 <SelectValue placeholder="Select age group..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Select age group...</SelectItem>
                 <SelectItem value="youth-u10">Youth U10</SelectItem>
                 <SelectItem value="youth-u12">Youth U12</SelectItem>
                 <SelectItem value="youth-u14">Youth U14</SelectItem>
