@@ -37,7 +37,7 @@ export function Header() {
                 key={item.path}
                 variant="ghost"
                 onClick={() => setLocation(item.path)}
-                className={`px-1 py-4 text-sm font-medium border-b-2 border-transparent hover:border-primary/20 ${
+                className={`px-1 py-4 text-sm font-medium border-b-2 border-transparent hover:border-primary/20 rounded-none ${
                   location === item.path
                     ? "text-primary border-primary"
                     : "text-slate-500 hover:text-slate-700"

@@ -38,7 +38,25 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
   });
 
   const handleSave = () => {
-    saveMutation.mutate(session);
+    // Transform the session data to match the database schema
+    const sessionToSave = {
+      title: session.title,
+      sessionType: session.session_type || session.sessionType,
+      sessionFocus: session.session_focus || session.sessionFocus,
+      durationMinutes: session.duration_minutes || session.durationMinutes,
+      participants: session.participants,
+      level: session.level,
+      objectives: session.objectives || [],
+      equipment: session.equipment || [],
+      safetyNotes: session.safety_notes || session.safetyNotes || [],
+      warmup: session.warmup || {},
+      practices: session.practices || [],
+      smallSidedGame: session.small_sided_game || session.smallSidedGame || {},
+      cooldown: session.cooldown || {},
+      diagrams: session.diagrams || {}
+    };
+    
+    saveMutation.mutate(sessionToSave);
   };
 
   const handleDownloadPDF = () => {
@@ -49,17 +67,7 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
     });
   };
 
-  const handleDownloadJSON = () => {
-    const dataStr = JSON.stringify(session, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `${session.title || 'session'}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
+
 
   return (
     <div className="mt-8" data-testid="session-results">
@@ -75,14 +83,6 @@ export function SessionResults({ session, onClose }: SessionResultsProps) {
               >
                 <Download className="mr-2 w-4 h-4" />
                 Download PDF
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleDownloadJSON}
-                data-testid="button-download-json"
-              >
-                <Download className="mr-2 w-4 h-4" />
-                JSON
               </Button>
               <Button
                 onClick={handleSave}

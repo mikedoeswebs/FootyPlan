@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { 
   Plus, 
-  Download, 
   Eye, 
   Trash2, 
   Clock, 
@@ -70,17 +69,7 @@ export default function Sessions() {
     }
   };
 
-  const handleDownloadJSON = (session: any) => {
-    const dataStr = JSON.stringify(session, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `${session.title}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
+
 
   if (isLoading) {
     return (
@@ -248,15 +237,6 @@ export default function Sessions() {
                     </div>
                     
                     <div className="flex items-center space-x-2 mt-4 md:mt-0">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDownloadJSON(session)}
-                        title="Download JSON"
-                        data-testid={`button-download-${session.id}`}
-                      >
-                        <Download className="w-4 h-4" />
-                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"
